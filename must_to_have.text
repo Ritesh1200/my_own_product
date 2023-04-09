@@ -1,0 +1,21 @@
+1. Must install GDAL library on your system
+    Ubuntu/Debian: sudo apt-get install libgdal-dev
+    CentOS/RHEL: sudo yum install gdal-devel
+    macOS with Homebrew: brew install gdal
+
+2. Set path to GDAL path in setting.py file
+    GDAL_LIBRARY_PATH = '/usr/lib/libgdal.so'
+
+3. set ENGINE of database to 'ENGINE': 'django.contrib.gis.db.backends.postgis'
+
+4. PostGIS is installed in your system 
+    open postgres as a Superuser and write command
+    - SELECT PostGIS_version();
+    If PostGIS is not installed:
+        - CREATE EXTENSION postgis;
+        If this cause an error you need to install postgis example:
+        - sudo apt-get install postgresql-12-postgis-3
+        Then try again.
+
+5. To import all the data of Cities model
+    - python manage.py cities --import=all
