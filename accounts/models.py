@@ -3,6 +3,7 @@ from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         PermissionsMixin)
 from django.utils.translation import gettext_lazy as _
 from cities.models import Country, Region, City
+from django.core.validators import RegexValidator
 
 # Create your models here.
 
@@ -73,10 +74,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
 
     gender = models.CharField(_("Gender"),max_length=1, choices=GENDERS ,null=True, blank=True)
-    first_name = models.CharField(_("First Name"),max_length=50, blank=True, null=True)
+    first_name = models.CharField(_("First Name"),max_length=50)
     last_name = models.CharField(_("Last Name"),max_length=100)
     email = models.EmailField(_('email address'), unique=True)
-    mobile = models.CharField(_("Mobile"),max_length=20)
+    mobile = models.CharField(_("Mobile"),validators=[
+        RegexValidator(
+            regex=r'^\(?:[0-9] ?){6,14}[0-9]$',
+            message='Invalid phone number',
+            code='invalid_phone'
+        )
+    ])
     address = models.ForeignKey(Address, on_delete=models.SET_NULL, related_name="user", null=True, blank=True)
     
     # Settings tab
