@@ -2,9 +2,30 @@ from django.db import models
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         PermissionsMixin)
 from django.utils.translation import gettext_lazy as _
+from cities.models import Country, Region, City
 
 # Create your models here.
 
+class CreatedUpdatedModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+class Address(CreatedUpdatedModel):
+    street_address = models.CharField(max_length=255)
+    city = models.ForeignKey(City, on_delete=models.PROTECT)
+    region = models.ForeignKey(Region, on_delete=models.PROTECT)
+    country = models.ForeignKey(Country, on_delete=models.PROTECT)
+    postal_code = models.CharField(max_length=10, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.street_address}, {self.city.name}, {self.region.name}, {self.country.name}'
+
+    class Meta:
+        verbose_name = "address"
+        verbose_name_plural = "address"
 
 class CustomAccountManager(BaseUserManager):
 
@@ -56,6 +77,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(_("Last Name"),max_length=100)
     email = models.EmailField(_('email address'), unique=True)
     mobile = models.CharField(_("Mobile"),max_length=20)
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, related_name="user", null=True, blank=True)
     
     # Settings tab
     is_active = models.BooleanField(default=False)
@@ -72,3 +94,4 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+    

@@ -29,7 +29,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts'
+
+    # For manage country, state, city
+    'cities',
+    'django.contrib.gis',
+
+    # Application
+    'accounts',
+    'orders'
+
 ]
 
 MIDDLEWARE = [
@@ -68,7 +76,7 @@ WSGI_APPLICATION = 'my_own_application.wsgi.application'
 
 DATABASES = {
    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': os.environ.get('DATABASE_NAME'),
         'USER': os.environ.get('DATABASE_USER'),
         'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
@@ -120,3 +128,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Set user model
 AUTH_USER_MODEL = "accounts.User"
+
+# Adding path of GDAL library
+GDAL_LIBRARY_PATH = '/usr/lib/libgdal.so'
